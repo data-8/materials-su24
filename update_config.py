@@ -59,7 +59,7 @@ except subprocess.CalledProcessError as e:
 try:
     with open("_config.yml", "r") as f:
         lines = f.readlines()
-    print(f"Original _config.yml:\n{''.join(lines)}")
+    print(f"Read _config.yml")
 except FileNotFoundError:
     print("_config.yml file not found.")
     exit(1)
@@ -68,26 +68,26 @@ except FileNotFoundError:
 for parent_directory, sub_directory in new_dirs:
     new_link = base_url.format(parent_directory=parent_directory, sub_directory=sub_directory)
     for i, line in enumerate(lines):
-        if line.startswith(f"{sub_directory}:"):
+        if f"{sub_directory}:" in line:
             name = line.split(":")[1].strip()
-            lines[i] = f"{sub_directory}: [{name}]({new_link})\n"
+            lines[i] = f"    {sub_directory}: [{name}]({new_link})\n"
             print(f"Updated line {i}: {lines[i]}")
 
 # Write the changes to the config.yml file
 try:
-    with open("config.yml", "w") as f:
+    with open("_config.yml", "w") as f:
         f.writelines(lines)
-    print(f"Updated config.yml:\n{''.join(lines)}")
+    print(f"Updated _config.yml")
 except IOError as e:
-    print(f"Error writing to config.yml: {e}")
+    print(f"Error writing to _config.yml: {e}")
     exit(1)
 
 # Commit and push the changes
 try:
-    subprocess.run(["git", "config", "user.name", "github-actions[bot]"], check=True)
-    subprocess.run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
-    subprocess.run(["git", "add", "config.yml"], check=True)
-    subprocess.run(["git", "commit", "-m", "Update config.yml with new directories"], check=True)
+    subprocess.run(["git", "config", "user.name", "jonathanferrari"], check=True)
+    subprocess.run(["git", "config", "user.email", "jonathanferrari@berkeley.edu"], check=True)
+    subprocess.run(["git", "add", "_config.yml"], check=True)
+    subprocess.run(["git", "commit", "-m", f"Update _config.yml with new files"], check=True)
     subprocess.run(["git", "push"], check=True)
 except subprocess.CalledProcessError as e:
     print(f"Error during git operations: {e.output.decode('utf-8')}")
