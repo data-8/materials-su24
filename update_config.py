@@ -1,5 +1,4 @@
 import os
-import re
 import subprocess
 from github import Github
 
@@ -12,9 +11,9 @@ g = Github(token)
 # The repository where the config.yml needs to be updated
 repo = g.get_repo("data-8/su24")
 
-# Get the latest commit in the current branch
+# Get the changed files in the latest commit
 try:
-    output = subprocess.check_output(["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"])
+    output = subprocess.check_output(["git", "diff", "--name-only", "HEAD~1"])
     changed_files = output.decode("utf-8").splitlines()
     print(f"Changed files: {changed_files}")
 except subprocess.CalledProcessError as e:
