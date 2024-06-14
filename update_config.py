@@ -4,19 +4,22 @@ from github import Github
 
 # Get the GitHub token from the environment
 token = os.getenv('GH_PAT')
-
 # Initialize the GitHub client
 g = Github(token)
 
 # The repository where the config.yml needs to be updated
 repo = g.get_repo("data-8/su24")
 
-# Fetch the latest changes
-subprocess.run(["git", "fetch", "origin"])
-
-# Get the changed files compared to the remote main branch
+# Fetch the latest changes with a depth of 0 to ensure we have the full history
 try:
-    output = subprocess.check_output(["git", "diff", "--name-only", "origin/main"])
+    subprocess.run(["git", "fetch", "--depth", "0"], check=True)
+except subprocess.CalledProcessError as e:
+    print(f"Error fetching the full history: {e.output.decode('utf-8')}")
+    exit(1)
+
+# Get the changed files compared to the previous commit
+try:
+    output = subprocess.check_output(["git", "diff", "--name-only", "HEAD~1", "HEAD"])
     changed_files = output.decode("utf-8").splitlines()
     print(f"Changed files: {changed_files}")
 except subprocess.CalledProcessError as e:
@@ -61,9 +64,9 @@ except FileNotFoundError:
 for parent_directory, sub_directory in new_dirs:
     new_link = base_url.format(parent_directory=parent_directory, sub_directory=sub_directory)
     for i, line in enumerate(lines):
-        if f"{sub_directory}:" in line:
+        if line.startswith(f"{sub_directory}:"):
             name = line.split(":")[1].strip()
-            lines[i] = f"    {sub_directory}: [{name}]({new_link})\n"
+            lines[i] = f"{sub_directory}: [{name}]({new_link})\n"
             print(f"Updated line {i}: {lines[i]}")
 
 # Write the changes to the config.yml file
