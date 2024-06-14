@@ -4,22 +4,26 @@ from github import Github
 
 # Get the GitHub token from the environment
 token = os.getenv('GH_PAT')
+
 # Initialize the GitHub client
 g = Github(token)
 
 # The repository where the config.yml needs to be updated
 repo = g.get_repo("data-8/su24")
 
-# Fetch the latest changes with a depth of 0 to ensure we have the full history
+# Fetch the latest changes with a depth of 2 to ensure we have the previous commit
 try:
-    subprocess.run(["git", "fetch"], check=True)
+    subprocess.run(["git", "fetch", "--depth", "2"], check=True)
+    # Get the hash of the second last commit
+    previous_commit = subprocess.check_output(["git", "log", "--format=%H", "-n", "2"]).decode('utf-8').split()[1]
+    print(f"Previous commit hash: {previous_commit}")
 except subprocess.CalledProcessError as e:
-    print(f"Error fetching the full history: {e.output.decode('utf-8')}")
+    print(f"Error fetching the full history or getting the previous commit: {e.output.decode('utf-8')}")
     exit(1)
 
 # Get the changed files compared to the previous commit
 try:
-    output = subprocess.check_output(["git", "diff", "--name-only", "HEAD~1", "HEAD"])
+    output = subprocess.check_output(["git", "diff", "--name-only", previous_commit, "HEAD"])
     changed_files = output.decode("utf-8").splitlines()
     print(f"Changed files: {changed_files}")
 except subprocess.CalledProcessError as e:
