@@ -12,7 +12,7 @@ repo = g.get_repo("data-8/su24")
 
 # Fetch the latest changes with a depth of 0 to ensure we have the full history
 try:
-    subprocess.run(["git", "fetch", "--depth", "0"], check=True)
+    subprocess.run(["git", "fetch"], check=True)
 except subprocess.CalledProcessError as e:
     print(f"Error fetching the full history: {e.output.decode('utf-8')}")
     exit(1)
