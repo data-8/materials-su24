@@ -15,7 +15,9 @@ repo = g.get_repo("data-8/su24")
 try:
     subprocess.run(["git", "fetch", "--depth", "2"], check=True)
     # Get the hash of the second last commit
-    previous_commit = subprocess.check_output(["git", "log", "--format=%H", "-n", "2"]).decode('utf-8').split()[1]
+    commits = subprocess.check_output(["git", "log", "--format=%H", "-n", "2"]).decode('utf-8')
+    print(commits)
+    previous_commit = commits.split("\n")[1]
     print(f"Previous commit hash: {previous_commit}")
 except subprocess.CalledProcessError as e:
     print(f"Error fetching the full history or getting the previous commit: {e.output.decode('utf-8')}")
