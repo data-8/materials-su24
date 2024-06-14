@@ -88,7 +88,8 @@ try:
     subprocess.run(["git", "config", "user.email", "jonathanferrari@berkeley.edu"], check=True)
     subprocess.run(["git", "add", "_config.yml"], check=True)
     subprocess.run(["git", "commit", "-m", f"Update _config.yml with new files"], check=True)
-    subprocess.run(["git", "push"], check=True)
+    push_url = f"https://{token}:x-oauth-basic@github.com/data-8/su24.git"
+    subprocess.run(["git", "push", push_url], check=True)
 except subprocess.CalledProcessError as e:
     print(f"Error during git operations: {str(e)}")
     exit(1)
