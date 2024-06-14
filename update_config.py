@@ -35,7 +35,7 @@ subprocess.run(["git", "clone", f"https://{token}@github.com/data-8/su24.git"])
 os.chdir("su24")
 
 # Read the current config.yml file
-with open("config.yml", "r") as f:
+with open("_config.yml", "r") as f:
     lines = f.readlines()
 
 # Update the config.yml file
