@@ -11,9 +11,12 @@ g = Github(token)
 # The repository where the config.yml needs to be updated
 repo = g.get_repo("data-8/su24")
 
-# Get the changed files in the latest commit
+# Fetch the latest changes
+subprocess.run(["git", "fetch", "origin"])
+
+# Get the changed files compared to the remote main branch
 try:
-    output = subprocess.check_output(["git", "diff", "--name-only", "HEAD~1"])
+    output = subprocess.check_output(["git", "diff", "--name-only", "origin/main"])
     changed_files = output.decode("utf-8").splitlines()
     print(f"Changed files: {changed_files}")
 except subprocess.CalledProcessError as e:
@@ -58,9 +61,9 @@ except FileNotFoundError:
 for parent_directory, sub_directory in new_dirs:
     new_link = base_url.format(parent_directory=parent_directory, sub_directory=sub_directory)
     for i, line in enumerate(lines):
-        if line.startswith(f"{sub_directory}:"):
+        if f"{sub_directory}:" in line:
             name = line.split(":")[1].strip()
-            lines[i] = f"{sub_directory}: [{name}]({new_link})\n"
+            lines[i] = f"    {sub_directory}: [{name}]({new_link})\n"
             print(f"Updated line {i}: {lines[i]}")
 
 # Write the changes to the config.yml file
