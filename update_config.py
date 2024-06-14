@@ -90,5 +90,5 @@ try:
     subprocess.run(["git", "commit", "-m", f"Update _config.yml with new files"], check=True)
     subprocess.run(["git", "push"], check=True)
 except subprocess.CalledProcessError as e:
-    print(f"Error during git operations: {e.output.decode('utf-8')}")
+    print(f"Error during git operations: {str(e)}")
     exit(1)
