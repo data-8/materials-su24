@@ -4,7 +4,7 @@ import subprocess
 from github import Github
 
 # Get the GitHub token from the environment
-token = os.getenv('GH_TOKEN')
+token = os.getenv('GH_PAT')
 
 # Initialize the GitHub client
 g = Github(token)
@@ -30,13 +30,17 @@ if not new_dirs:
     print("No new directories found.")
     exit(0)
 
+print(f"New directories detected: {new_dirs}")
+
 # Clone the su24 repository
 subprocess.run(["git", "clone", f"https://{token}@github.com/data-8/su24.git"])
 os.chdir("su24")
 
 # Read the current config.yml file
-with open("_config.yml", "r") as f:
+with open("config.yml", "r") as f:
     lines = f.readlines()
+
+print(f"Original config.yml:\n{''.join(lines)}")
 
 # Update the config.yml file
 for parent_directory, sub_directory in new_dirs:
@@ -45,10 +49,13 @@ for parent_directory, sub_directory in new_dirs:
         if line.startswith(f"{sub_directory}:"):
             name = line.split(":")[1].strip()
             lines[i] = f"{sub_directory}: [{name}]({new_link})\n"
+            print(f"Updated line {i}: {lines[i]}")
 
 # Write the changes to the config.yml file
 with open("config.yml", "w") as f:
     f.writelines(lines)
+
+print(f"Updated config.yml:\n{''.join(lines)}")
 
 # Commit and push the changes
 subprocess.run(["git", "config", "user.name", "github-actions[bot]"])
