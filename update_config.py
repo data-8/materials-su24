@@ -13,8 +13,13 @@ g = Github(token)
 repo = g.get_repo("data-8/su24")
 
 # Get the latest commit in the current branch
-output = subprocess.check_output(["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"])
-changed_files = output.decode("utf-8").splitlines()
+try:
+    output = subprocess.check_output(["git", "diff-tree", "--no-commit-id", "--name-only", "-r", "HEAD"])
+    changed_files = output.decode("utf-8").splitlines()
+    print(f"Changed files: {changed_files}")
+except subprocess.CalledProcessError as e:
+    print(f"Error getting changed files: {e.output.decode('utf-8')}")
+    exit(1)
 
 # Define the base URL
 base_url = "https://data8.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fdata-8%2Fmaterials-su24&urlpath=retro%2Ftree%2Fmaterials-su24%2Fmaterials%2F{parent_directory}%2F{sub_directory}%2F{sub_directory}.ipynb&branch=main"
@@ -23,6 +28,7 @@ base_url = "https://data8.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=h
 new_dirs = []
 for file in changed_files:
     parts = file.split('/')
+    print(f"Checking file: {file}, parts: {parts}")
     if len(parts) == 2 and parts[0] in ["hw", "lab", "proj"]:
         new_dirs.append((parts[0], parts[1]))
 
@@ -33,14 +39,21 @@ if not new_dirs:
 print(f"New directories detected: {new_dirs}")
 
 # Clone the su24 repository
-subprocess.run(["git", "clone", f"https://{token}@github.com/data-8/su24.git"])
-os.chdir("su24")
+try:
+    subprocess.run(["git", "clone", f"https://{token}@github.com/data-8/su24.git"], check=True)
+    os.chdir("su24")
+except subprocess.CalledProcessError as e:
+    print(f"Error cloning repository: {e.output.decode('utf-8')}")
+    exit(1)
 
 # Read the current config.yml file
-with open("config.yml", "r") as f:
-    lines = f.readlines()
-
-print(f"Original config.yml:\n{''.join(lines)}")
+try:
+    with open("config.yml", "r") as f:
+        lines = f.readlines()
+    print(f"Original config.yml:\n{''.join(lines)}")
+except FileNotFoundError:
+    print("config.yml file not found.")
+    exit(1)
 
 # Update the config.yml file
 for parent_directory, sub_directory in new_dirs:
@@ -52,14 +65,21 @@ for parent_directory, sub_directory in new_dirs:
             print(f"Updated line {i}: {lines[i]}")
 
 # Write the changes to the config.yml file
-with open("config.yml", "w") as f:
-    f.writelines(lines)
-
-print(f"Updated config.yml:\n{''.join(lines)}")
+try:
+    with open("config.yml", "w") as f:
+        f.writelines(lines)
+    print(f"Updated config.yml:\n{''.join(lines)}")
+except IOError as e:
+    print(f"Error writing to config.yml: {e}")
+    exit(1)
 
 # Commit and push the changes
-subprocess.run(["git", "config", "user.name", "github-actions[bot]"])
-subprocess.run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"])
-subprocess.run(["git", "add", "config.yml"])
-subprocess.run(["git", "commit", "-m", "Update config.yml with new directories"])
-subprocess.run(["git", "push"])
+try:
+    subprocess.run(["git", "config", "user.name", "github-actions[bot]"], check=True)
+    subprocess.run(["git", "config", "user.email", "github-actions[bot]@users.noreply.github.com"], check=True)
+    subprocess.run(["git", "add", "config.yml"], check=True)
+    subprocess.run(["git", "commit", "-m", "Update config.yml with new directories"], check=True)
+    subprocess.run(["git", "push"], check=True)
+except subprocess.CalledProcessError as e:
+    print(f"Error during git operations: {e.output.decode('utf-8')}")
+    exit(1)
