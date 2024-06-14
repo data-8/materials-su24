@@ -3,7 +3,7 @@ import subprocess
 from github import Github
 
 # Get the GitHub token from the environment
-token = os.getenv('GH_PAT')
+token = os.getenv('GH_TOKEN')
 
 # Initialize the GitHub client
 g = Github(token)
