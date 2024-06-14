@@ -15,9 +15,7 @@ repo = g.get_repo("data-8/su24")
 try:
     subprocess.run(["git", "fetch", "--depth", "2"], check=True)
     # Get the hash of the second last commit
-    commits = subprocess.check_output(["git", "log", "--format=%H", "-n", "2"]).decode('utf-8')
-    print(commits)
-    previous_commit = commits.split("\n")[1]
+    previous_commit = subprocess.check_output(["git", "log", "--format=%H", "-n", "2"]).decode('utf-8').split()[1]
     print(f"Previous commit hash: {previous_commit}")
 except subprocess.CalledProcessError as e:
     print(f"Error fetching the full history or getting the previous commit: {e.output.decode('utf-8')}")
@@ -36,12 +34,12 @@ except subprocess.CalledProcessError as e:
 base_url = "https://data8.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fdata-8%2Fmaterials-su24&urlpath=retro%2Ftree%2Fmaterials-su24%2Fmaterials%2F{parent_directory}%2F{sub_directory}%2F{sub_directory}.ipynb&branch=main"
 
 # Find new directories
-new_dirs = []
+new_dirs = set()
 for file in changed_files:
     parts = file.split('/')
     print(f"Checking file: {file}, parts: {parts}")
-    if len(parts) == 2 and parts[0] in ["hw", "lab", "proj"]:
-        new_dirs.append((parts[0], parts[1]))
+    if parts[0] in ["hw", "lab", "proj"] and len(parts) > 1:
+        new_dirs.add((parts[0], parts[1]))
 
 if not new_dirs:
     print("No new directories found.")
@@ -59,11 +57,11 @@ except subprocess.CalledProcessError as e:
 
 # Read the current config.yml file
 try:
-    with open("config.yml", "r") as f:
+    with open("_config.yml", "r") as f:
         lines = f.readlines()
-    print(f"Original config.yml:\n{''.join(lines)}")
+    print(f"Original _config.yml:\n{''.join(lines)}")
 except FileNotFoundError:
-    print("config.yml file not found.")
+    print("_config.yml file not found.")
     exit(1)
 
 # Update the config.yml file
