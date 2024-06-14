@@ -69,8 +69,8 @@ for parent_directory, sub_directory in new_dirs:
     new_link = base_url.format(parent_directory=parent_directory, sub_directory=sub_directory)
     for i, line in enumerate(lines):
         if f"{sub_directory}:" in line:
-            name = line.split(":")[1].strip()
-            lines[i] = f"    {sub_directory}: [{name}]({new_link})\n"
+            name = line.split(":")[1].strip().strip('"')
+            lines[i] = f"    {sub_directory}: \"[{name}]({new_link})\"\n"
             print(f"Updated line {i}: {lines[i]}")
 
 # Write the changes to the config.yml file
