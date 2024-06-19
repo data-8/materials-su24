@@ -31,7 +31,7 @@ except subprocess.CalledProcessError as e:
     exit(1)
 
 # Define the base URL
-base_url = "https://data8.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fdata-8%2Fmaterials-su24&urlpath=retro%2Ftree%2Fmaterials-su24%2Fmaterials%2F{parent_directory}%2F{sub_directory}%2F{sub_directory}.ipynb&branch=main"
+base_url = "https://data8.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fdata-8%2Fmaterials-su24&branch=main&urlpath=tree%2Fmaterials-su24%2F{parent_directory}%2F{sub_directory}%2F{sub_directory}.ipynb&branch=main"
 
 # Find new directories
 new_dirs = set()
