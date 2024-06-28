@@ -8,11 +8,13 @@ from datetime import datetime, timedelta
 from ed_posts import Homework, Lab, Project
 
 def get_latest_commit_message():
-    result = subprocess.run(['git', 'log', '-1', '--pretty=%B'], stdout=subprocess.PIPE)
-    return result.stdout.decode('utf-8').strip()
+    result = subprocess.run(['git', 'log', 'main', '-1', "--pretty=format:'%H %B'"], stdout=subprocess.PIPE)
+    commit_hash, commit_message = result.stdout.decode('utf-8').strip().split(' ', 1)
+    return commit_hash, commit_message
 
 def main():
-    commit_message = get_latest_commit_message()
+    commit_hash, commit_message = get_latest_commit_message()
+    print(f"Latest commit hash: {commit_hash}")
     print(f"Latest commit message: {commit_message}")
 
     match = re.match(r"Release assignment\(s\) (.+)", commit_message)
