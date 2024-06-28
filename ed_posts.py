@@ -140,7 +140,7 @@ class Homework:
             ID = DATA8
         post = ed.post_thread(ID, params)["number"]
         print(f"Posted HW {assignment_num} threads to {ID}")
-        print(f"Main thread: {post['number']}")
+        print(f"Main thread: {post}")
         
 class Lab:
     
