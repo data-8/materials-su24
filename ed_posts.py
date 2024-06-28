@@ -138,7 +138,7 @@ class Homework:
             ID = SANDBOX
         else:
             ID = DATA8
-        post = ed.post_thread(ID, params)
+        post = ed.post_thread(ID, params)["number"]
         print(f"Posted HW {assignment_num} threads to {ID}")
         print(f"Main thread: {post['number']}")
         
@@ -165,7 +165,7 @@ class Lab:
             ID = SANDBOX
         else:
             ID = DATA8
-        post_id = ed.post_thread(ID, params)
+        post_id = ed.post_thread(ID, params)["number"]
         print(f"Lab {assignment_num} post created with ID {post_id}")
         
 class Project:
@@ -189,5 +189,7 @@ class Project:
             ID = SANDBOX
         else:
             ID = DATA8
-        post_id = ed.post_thread(ID, params)
+        post_id = ed.post_thread(ID, params)["number"]
         print(f"Project {assignment_num} post created with ID {post_id}")
+
+Lab.make_post("03")
