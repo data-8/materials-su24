@@ -191,5 +191,3 @@ class Project:
             ID = DATA8
         post_id = ed.post_thread(ID, params)["number"]
         print(f"Project {assignment_num} post created with ID {post_id}")
-
-Lab.make_post("03")
