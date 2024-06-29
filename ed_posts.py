@@ -5,7 +5,7 @@ ed = EdAPI()
 ed.login()
 SANDBOX = 59934
 DATA8 = 59844
-SEM = "su24"
+SEM = "sp24"
 
 class Homework:
     TEMPLATE = """<document version="2.0"><callout type="success"><bold><link href="https://data8.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fdata-8%2Fmaterials-su24&amp;branch=main&amp;urlpath=tree%2Fmaterials-su24%2Fhw%2Fhw{0}%2Fhw{0}.ipynb&amp;branch=main">Homework {0}</link></bold><bold> has been released on the <link href="https://www.data8.org/su24/">course website</link>!</bold></callout><paragraph>It will be due on {1} at 11pm PT. There are also 5 extra points available for submitting it by {2} at 11pm.</paragraph><paragraph>Remember, there are resources to help you with assignments! You can ask for help here on Ed in the threads for each question (see below). Remember to never post your code publicly; please make a private post if you have to post any code. We also encourage you to review the course policies concerning collaboration and academic honesty here.</paragraph> <paragraph>You can also get help at office hours, which the times can be found <link href="https://www.data8.org/su24/officehours/">here</link>. We highly recommend getting started on the homework earlier, so that if you need help, you can attend OH before the deadline on {1}.</paragraph><paragraph>Check out our <link href="https://www.data8.org/su24/debugging/">DataHub Guide</link> if you run into any issues working on Jupyter Notebook before posting on Ed. As a reminder, it is your responsibility to make sure the autograder test results in the notebook match the autograder results on Gradescope after you submit.</paragraph><paragraph>Here is a link to a <link href="https://drive.google.com/file/d/16pHDurc5iAL8AWHdNirpk3JOLJIsITAw/view">video</link> on the autograder submission process and a link to a <link href="https://drive.google.com/file/d/1fejDCUsAMgznwrhNjzZgrKBrPiM6JKXe/view">video</link> on the written submission process.</paragraph><paragraph>Here are the links to the individual question post threads. Please post your questions in the relevant thread instead of creating a new thread each time, unless you need to make a private post with your code:</paragraph><list style="bullet">{3}</list><paragraph>You may ask general logistical questions about Homework {4} in this thread.</paragraph></document>"""
@@ -187,7 +187,7 @@ class Project:
                     # check if line has \d. in it
                     if re.search(r"\d\.", line):
                         questions.append(line.strip().strip("##.").strip())
-        questions = [q.split(".") for q in questions]
+        questions = [q.split(".", maxsplit=1) for q in questions]
         return {q[0].strip(): q[1].strip() for q in questions}
 
     @staticmethod
@@ -197,7 +197,7 @@ class Project:
         """
         return {
             "type": "post",
-            "title": f"Project 1 {int(assignment_num)} Question {question_number}: {question_title}",
+            "title": f"Project {int(assignment_num)} Question {question_number}: {question_title}",
             "category": "Project",
             "subcategory": f"Project {assignment_num}",
             "subsubcategory": None,
@@ -274,9 +274,9 @@ class Project:
     def make_post(assignment_num, sandbox=False):
         params = {
             "type": "announcement",
-            "title": f"HW {assignment_num} Released",
-            "category": "Homework",
-            "subcategory": f"Homework {assignment_num}",
+            "title": f"Project {assignment_num} Released",
+            "category": "Project",
+            "subcategory": f"Project {assignment_num}",
             "subsubcategory": None,
             "content": Project.generate_content(assignment_num, sandbox=sandbox),
             "is_pinned": True,
@@ -294,6 +294,7 @@ class Project:
         print(f"Main thread: {post}")
 
 class Lab:
+
     
     TEMPLATE = """<document version="2.0"><callout type="success"><bold><link href="https://data8.datahub.berkeley.edu/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2Fdata-8%2Fmaterials-su24&amp;branch=main&amp;urlpath=tree%2Fmaterials-su24%2Flab%2Flab{0}%2Flab{0}.ipynb">Lab {0}</link> has been released on the <underline><link href="https://www.data8.org/su24/">course website</link></underline>!</bold></callout><paragraph><bold>Lab assignments are designed to introduce you to the programming and statistics concepts you've learned about in the lecture.</bold> Each lab will guide you through a set of problems that allow you to use Python to answer questions with data. The problems in the lab are good preparation for similar (and harder) problems you will see on your homework assignments. If you are enrolled in a regular lab, you will have time each week to work on the lab notebook in your lab section.</paragraph><callout type="warning"><bold>All students</bold> <bold>should submit the lab notebook to <link href="https://www.gradescope.com/courses/798344">Gradescope</link> by the due date listed on the website at 11 PM</bold>. You must attend the first hour of their lab and submit the lab notebook with significant progress for full lab credit.</callout><paragraph><bold>Lab {0} has been released on Gradescope, so feel free to submit it there once you're done!</bold></paragraph><paragraph><bold><underline>Other Important Notes:</underline></bold></paragraph><list style="unordered"><list-item><paragraph><underline><link href="https://drive.google.com/file/d/1j-H2NCyC01SL8P2rkyiz7-AYFXE11HCD/view?usp=drive_link"><bold>Here</bold></link></underline> is the video for how to submit to Gradescope.</paragraph></list-item><list-item><paragraph>You will not see your grade on Gradescope until we release grades. After you submit to Gradescope, you should see "-/100".</paragraph></list-item><list-item><callout type="info"><bold>!! IT IS EXTREMELY CRITICAL THAT YOU PASS THE SAME TESTS YOU PASSED IN YOUR NOTEBOOK AS GRADESCOPE !!</bold></callout></list-item><list-item><paragraph>Around the 2:50 mark in the video linked above, you can see what "passing" a test on Gradescope looks like.</paragraph></list-item><list-item><paragraph>So if you pass 8/10 tests in your notebook, you should also pass the same 8/10 of the tests on Gradescope.</paragraph></list-item><list-item><paragraph>If you don't pass the same tests, make sure you are submitting to the right assignment and saving properly. If that still doesn't resolve your issue, please make an Ed post.</paragraph></list-item><list-item><paragraph>For labs, all the tests are public -- if you pass all of them, you will receive full credit. For homeworks and projects, some of the tests are private -- you are not guaranteed a full score even if you pass all the public tests (the ones you can see).</paragraph></list-item><list-item><paragraph>Please note that this video does NOT cover the submission of written work. You should follow the instructions written on each assignment to see how to submit written work.</paragraph></list-item></list><paragraph>Feel free to post any general questions in a follow-up below. Please <bold>make a private post</bold> (using the provided template under the "Lab" category) if you need help debugging or want to include anything with your code or solutions!</paragraph><paragraph>Have a gr8 day, and we look forward to seeing you in lab!</paragraph></document>"""
 
@@ -318,3 +319,5 @@ class Lab:
             ID = DATA8
         post_id = ed.post_thread(ID, params)["number"]
         print(f"Lab {assignment_num} post created with ID {post_id}")
+
+Project.make_post(1, sandbox=True)
