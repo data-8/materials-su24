@@ -183,9 +183,9 @@ class Project:
         questions = []
         for cell in md:
             for line in cell["source"]:
-                if line.strip().startswith("# Part"):
+                if line.strip().startswith("# ") and not line.startswith("# Project"):
                     # check if line has \d. in it
-                    if re.search(r"\d\.", line):
+                    if re.search(r"\d", line) and "Part" in line:
                         questions.append(line.strip().strip("##.").strip())
         questions = [q.split(":", maxsplit=1) for q in questions]
         return {q[0].strip(): q[1].strip() for q in questions}
